@@ -1,7 +1,7 @@
 {
   "$schema": "https://mintlify.com/docs.json",
-  "theme": "mint",
-  "name": "Mint Starter Kit",
+  "theme": "linden",
+  "name": "Arki Starter Kit",
   "colors": {
     "primary": "#16A34A",
     "light": "#07C983",
@@ -11,14 +11,14 @@
   "navigation": {
     "tabs": [
       {
-        "tab": "Guides",
+        "tab": "Documentação",
         "groups": [
           {
-            "group": "Getting started",
+            "group": "Comece Aqui",
             "pages": [
               "index",
-              "quickstart",
-              "development"
+              "comece-aqui",
+              "desenvolvimento"
             ]
           },
           {
@@ -36,20 +36,8 @@
               "essentials/images",
               "essentials/reusable-snippets"
             ]
-          },
-          {
-            "group": "AI tools",
-            "pages": [
-              "ai-tools/cursor",
-              "ai-tools/claude-code",
-              "ai-tools/windsurf"
-            ]
           }
         ]
-      },
-      {
-        "tab": "API reference",
-        "groups": []
       }
     ],
     "global": {
@@ -98,9 +86,8 @@
   },
   "footer": {
     "socials": {
-      "x": "https://x.com/mintlify",
-      "github": "https://github.com/mintlify",
-      "linkedin": "https://linkedin.com/company/mintlify"
+      "x": "https://x.com/lincolixavier",
+      "github": "https://github.com/lincolixavier"
     }
   }
 }
