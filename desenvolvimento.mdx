@@ -1,0 +1,141 @@
+---
+title: 'Configuração do Projeto'
+description: 'Guia para instalar dependências, configurar variáveis de ambiente, banco de dados e autenticação.'
+---
+
+<Info>
+  **Pré-requisitos**:
+
+  - Node.js 20 ou superior
+  - Bun 1.2.4 ou superior
+  - Git instalado (ex.: GitHub Desktop)
+  - Editor de código (VS Code ou equivalente)
+</Info>
+
+Siga os passos abaixo para configurar e executar o projeto localmente.
+
+<Steps>
+  <Step title="Instalar dependências e acessar o projeto">
+    1. Extraia o arquivo do projeto.
+    2. Navegue até o diretório raiz:
+
+    ```bash
+    cd monorepo-next-drizzle-authjs
+    ```
+  </Step>
+  <Step title="Configurar variáveis de ambiente">
+    Copie os arquivos de exemplo para criar os `.env`:
+
+    ```bash
+    cp apps/dashboard/.env.example apps/dashboard/.env
+    cp apps/marketing/.env.example apps/marketing/.env
+    cp apps/public-api/.env.example apps/public-api/.env
+    cp packages/database/.env.example packages/database/.env
+    ```
+  </Step>
+  <Step title="Instalar e configurar o PostgreSQL">
+    Instale o PostgreSQL (use Homebrew, Chocolatey ou baixe do [site oficial](https://www.postgresql.org/download/)):
+
+    ```bash
+    brew install postgresql
+    ```
+
+    Crie um usuário inicial:
+
+    ```bash
+    sudo -u postgres psql
+    CREATE USER postgres WITH PASSWORD 'password';
+    ALTER USER postgres WITH SUPERUSER;
+    \q
+    ```
+  </Step>
+  <Step title="Configurar conexão com o banco de dados">
+    Edite `packages/database/.env` com suas credenciais:
+
+    ```env
+    DATABASE_URL=postgresql://postgres:password@localhost:5432/database?schema=public
+    ```
+
+    Aplique as migrações do banco:
+
+    ```bash
+    pnpm --filter database push
+    ```
+
+    Atualize também `apps/dashboard/.env`:
+
+    ```env
+    DATABASE_URL=postgresql://postgres:password@localhost:5432/database?schema=public
+    ```
+  </Step>
+  <Step title="Gerar chave de autenticação (AUTH_SECRET)">
+    É recomendado gerar uma chave para `apps/dashboard/.env`:
+
+    ```bash
+    npx auth secret
+    ```
+
+    Alternativamente:
+
+    ```bash
+    openssl rand -base64 32
+    ```
+  </Step>
+  <Step title="Configurar login com Google (opcional)">
+    1. Acesse o [Google Cloud Console](https://console.cloud.google.com/).
+    2. Crie um projeto ou use um existente.
+    3. Ative **APIs e Serviços** e configure a **tela de consentimento OAuth**.
+    4. Em **Credenciais**, crie um **ID de cliente OAuth** e copie os dados.
+    5. Configure os domínios autorizados:
+
+    ```bash
+    http://localhost:3000
+    ```
+
+    6. Configure o URI de redirecionamento autorizado:
+
+    ```bash
+    http://localhost:3000/api/auth/callback/google
+    ```
+
+    7. Atualize `apps/dashboard/.env` com as credenciais:
+
+    ```env
+    AUTH_GOOGLE_CLIENT_ID=
+    AUTH_GOOGLE_CLIENT_SECRET=
+    ```
+  </Step>
+</Steps>
+
+## Portas personalizadas
+
+Por padrão, o projeto roda em `http://localhost:3000`. Caso queira alterar a porta:
+
+```bash
+pnpm dev --port 3333
+```
+
+Se a porta estiver ocupada, a próxima disponível será usada automaticamente.
+
+## Ferramentas recomendadas
+
+- [MDX VSCode extension](https://marketplace.visualstudio.com/items?itemName=unifiedjs.vscode-mdx) para syntax highlighting.
+- [Prettier](https://marketplace.visualstudio.com/items?itemName=esbenp.prettier-vscode) para formatação de código.
+
+## Troubleshooting
+
+<AccordionGroup>
+  <Accordion title='Erro: módulo "sharp" não pôde ser carregado'>
+    ```
+    1. Remova a versão atual do CLI: `npm remove -g mint`
+    2. Atualize para Node.js 20 ou superior.
+    3. Reinstale o CLI ou dependências do projeto.
+    ```
+  </Accordion>
+  <Accordion title="Erro desconhecido ao iniciar o projeto">
+    ```
+    Vá até o diretório raiz e remova a pasta de cache do projeto ou a pasta `~/.pnpm-store`.  
+    Em seguida, rode `pnpm install` e `pnpm dev` novamente.
+    ```
+  </Accordion>
+</AccordionGroup>
